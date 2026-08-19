@@ -1,0 +1,103 @@
+{
+  "info": {
+    "name": "RippleRepair API",
+    "description": "Markdown input/output operating-profit correction with consensus extraction, scale repair, and FactReasoner ripple propagation.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8200"}
+  ],
+  "item": [
+    {
+      "name": "Service status",
+      "request": {"method": "GET", "url": "{{baseUrl}}/api/status"}
+    },
+    {
+      "name": "Correct Markdown (recommended, default LLM)",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"markdown_text\": \"## 2026년 최근 컨센서스 전망치 분석\\n| Date | Amount (원) | Amount (억원) |\\n|---|---:|---:|\\n| 2026-06-30 | 35,000,000,000,000 | 350,000 |\\n\\n## 2026년 연간 영업이익 전망\\n- **상방:** 4,000,000,000,000,000원\\n- **중간:** 3,500,000,000,000,000원\\n- **하방:** 30,000,000,000,000원\\n\\n## 결론\\n2026년 중간 영업이익 전망은 3,500조원으로 판단한다.\"\n}"
+        },
+        "url": "{{baseUrl}}/api/forecasts/operating-profit/correct"
+      }
+    },
+    {
+      "name": "Correct Markdown (fast, LLM FactReasoner)",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"consensus_won\": 35000000000000,\n  \"markdown_text\": \"- 2026년 영업이익 전망: 3500조원\\n\\n## 결론\\n2026년 영업이익 전망은 3,500조원이다.\",\n  \"graph_mode\": \"fast\"\n}"
+        },
+        "url": "{{baseUrl}}/api/forecasts/operating-profit/correct"
+      }
+    },
+    {
+      "name": "Integrated correction preview",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"markdown_text\": \"## 최근 컨센서스 전망치 분석\\n| Date | 영업이익 |\\n|---|---:|\\n| 2026-06-30 | 35,000,000,000,000 |\\n\\n## 2026년 연간 영업이익 전망\\n- 상방: 4000000000000000원\\n- 중간: 3500000000000000원\\n- 하방: 3000000000000000원\",\n  \"graph_mode\": \"llm\"\n}"
+        },
+        "url": "{{baseUrl}}/api/forecasts/operating-profit/correction-preview"
+      }
+    },
+    {
+      "name": "Operating profit scale correction only",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"markdown_text\": \"## 2026년 최근 컨센서스 전망치 분석\\n| Date | Amount (억원) |\\n|---|---:|\\n| 2026-06-30 | 350000 |\\n\\n## 2026년 연간 영업이익 전망\\n- 상방: 4000000000000000원\\n- 중간: 3500000000000000원\\n- 하방: 30000000000000원\"\n}"
+        },
+        "url": "{{baseUrl}}/api/forecasts/operating-profit/scale-correction"
+      }
+    },
+    {
+      "name": "Operating loss scale correction",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"markdown_text\": \"## 2026년 최근 컨센서스 전망치 분석\\n| Date | 영업이익 |\\n|---|---:|\\n| 2026-06-30 | -40,000,000,000 |\\n\\n## 2026년 연간 영업이익 전망\\n- 상방: -300000000000원\\n- 중간: -400000000000원\\n- 하방: -500000000000원\"\n}"
+        },
+        "url": "{{baseUrl}}/api/forecasts/operating-profit/scale-correction"
+      }
+    },
+    {
+      "name": "FactReasoner graph preview",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"markdown_text\": \"<scale corrected markdown>\",\n  \"graph_mode\": \"llm\"\n}"},
+        "url": "{{baseUrl}}/api/fact-graph-preview"
+      }
+    },
+    {
+      "name": "FactReasoner judge atom",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"markdown_text\": \"<scale corrected markdown>\",\n  \"nodes\": [],\n  \"edges\": [],\n  \"target_node_id\": \"<atom id>\"\n}"},
+        "url": "{{baseUrl}}/api/fact-graph/judge-atom"
+      }
+    },
+    {
+      "name": "FactReasoner propagate correction",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"markdown_text\": \"<scale corrected markdown>\",\n  \"nodes\": [],\n  \"edges\": [],\n  \"target_node_id\": \"<atom id>\",\n  \"corrected_statement\": \"<approved correction>\",\n  \"max_depth\": 3\n}"},
+        "url": "{{baseUrl}}/api/fact-graph/propagate-correction"
+      }
+    }
+  ]
+}

@@ -1,0 +1,588 @@
+/* =============================================================
+ * Soft Light Theme — Hallucination Verifier Web UI
+ *
+ * 기존 다크 테마의 Tailwind 유틸 클래스(bg-gray-900/950/800/...,
+ * text-gray-100/200/..., bg-*-900/30 tinted panels, text-*-300 accents)
+ * 을 라이트 베이지/페이퍼 톤으로 remapping 합니다.
+ *
+ * 활성화: <body class="... theme-soft">
+ * 비활성화: theme-soft 클래스를 제거하면 기존 다크 테마로 복귀.
+ * ============================================================= */
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+body.theme-soft {
+  background: #f5f1ea;
+  color: #2a2721;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Noto Sans KR", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
+}
+
+/* ── 스크롤바 ─────────────────────────────────────────────── */
+body.theme-soft ::-webkit-scrollbar-track { background: #efe9df; }
+body.theme-soft ::-webkit-scrollbar-thumb { background: #c2bba9; border-radius: 3px; }
+
+/* ── Gray scale (베이지 계열로 swap) ──────────────────────── */
+.theme-soft .bg-gray-950 { background-color: #f5f1ea !important; }
+.theme-soft .bg-gray-900 { background-color: #ffffff !important; }
+.theme-soft .bg-gray-800 { background-color: #faf7f2 !important; }
+.theme-soft .bg-gray-700 { background-color: #efe9df !important; }
+
+/* Grayscale alpha variants (e.g. bg-gray-800/80) */
+.theme-soft .bg-gray-950\/70,
+.theme-soft .bg-gray-950\/80,
+.theme-soft .bg-gray-900\/70,
+.theme-soft .bg-gray-900\/80 { background-color: #f5f1ea !important; }
+.theme-soft .bg-gray-800\/60,
+.theme-soft .bg-gray-800\/70,
+.theme-soft .bg-gray-800\/80 { background-color: #efe9df !important; }
+.theme-soft .bg-gray-700\/60,
+.theme-soft .bg-gray-700\/80 { background-color: #e7e0d2 !important; }
+
+.theme-soft .border-gray-950 { border-color: #d9d2c4 !important; }
+.theme-soft .border-gray-900 { border-color: #e7e0d2 !important; }
+.theme-soft .border-gray-800 { border-color: #e7e0d2 !important; }
+.theme-soft .border-gray-700 { border-color: #d9d2c4 !important; }
+
+.theme-soft .text-white      { color: #1f1c17 !important; }
+.theme-soft .text-gray-100   { color: #2a2721 !important; }
+.theme-soft .text-gray-200   { color: #3a3529 !important; }
+.theme-soft .text-gray-300   { color: #4b463c !important; }
+.theme-soft .text-gray-400   { color: #6b6559 !important; }
+.theme-soft .text-gray-500   { color: #857d6e !important; }
+.theme-soft .text-gray-600   { color: #a39c8c !important; }
+
+.theme-soft .placeholder-gray-600::placeholder { color: #c2bba9 !important; }
+.theme-soft .placeholder-gray-500::placeholder { color: #b7b0a0 !important; }
+
+/* Hover 상태 grayscale */
+.theme-soft .hover\:bg-gray-700:hover { background-color: #e7e0d2 !important; }
+.theme-soft .hover\:bg-gray-800:hover { background-color: #efe9df !important; }
+.theme-soft .hover\:text-white:hover  { color: #1f1c17 !important; }
+.theme-soft .hover\:text-gray-200:hover { color: #3a3529 !important; }
+.theme-soft .hover\:text-gray-400:hover { color: #6b6559 !important; }
+
+/* ── 상태 패널(solid) — 짙은 톤을 가벼운 틴트로 교체 ─────── */
+.theme-soft .bg-red-900     { background-color: #fee2e2 !important; }
+.theme-soft .bg-blue-900    { background-color: #dbeafe !important; }
+.theme-soft .bg-green-900   { background-color: #dcfce7 !important; }
+.theme-soft .bg-yellow-900  { background-color: #fef9c3 !important; }
+.theme-soft .bg-orange-900  { background-color: #ffedd5 !important; }
+.theme-soft .bg-purple-900  { background-color: #f3e8ff !important; }
+.theme-soft .bg-indigo-900  { background-color: #e0e7ff !important; }
+.theme-soft .bg-amber-900   { background-color: #fef3c7 !important; }
+.theme-soft .bg-teal-900    { background-color: #ccfbf1 !important; }
+
+/* ── 상태 패널(alpha variants) — 가볍게 통일 ─────────────── */
+.theme-soft .bg-red-900\/20,
+.theme-soft .bg-red-900\/30,
+.theme-soft .bg-red-900\/40,
+.theme-soft .bg-red-900\/50   { background-color: #fee2e2 !important; }
+.theme-soft .bg-red-900\/60   { background-color: #fecaca !important; }
+.theme-soft .bg-red-500\/20   { background-color: #fecaca !important; }
+
+.theme-soft .bg-blue-900\/20,
+.theme-soft .bg-blue-900\/30,
+.theme-soft .bg-blue-900\/40,
+.theme-soft .bg-blue-900\/60  { background-color: #dbeafe !important; }
+
+.theme-soft .bg-green-900\/20,
+.theme-soft .bg-green-900\/30,
+.theme-soft .bg-green-900\/40 { background-color: #dcfce7 !important; }
+.theme-soft .bg-green-500\/20 { background-color: #bbf7d0 !important; }
+
+.theme-soft .bg-yellow-900\/20,
+.theme-soft .bg-yellow-900\/30,
+.theme-soft .bg-yellow-900\/40 { background-color: #fef9c3 !important; }
+
+.theme-soft .bg-orange-900\/20,
+.theme-soft .bg-orange-900\/30 { background-color: #ffedd5 !important; }
+
+.theme-soft .bg-purple-900\/20,
+.theme-soft .bg-purple-900\/30,
+.theme-soft .bg-purple-900\/40,
+.theme-soft .bg-purple-900\/60 { background-color: #f3e8ff !important; }
+
+.theme-soft .bg-indigo-900\/20,
+.theme-soft .bg-indigo-900\/30,
+.theme-soft .bg-indigo-900\/40,
+.theme-soft .bg-indigo-900\/60 { background-color: #e0e7ff !important; }
+
+.theme-soft .bg-amber-900\/20,
+.theme-soft .bg-amber-900\/30,
+.theme-soft .bg-amber-900\/40,
+.theme-soft .bg-amber-900\/60 { background-color: #fef3c7 !important; }
+
+.theme-soft .bg-teal-900\/20,
+.theme-soft .bg-teal-900\/30,
+.theme-soft .bg-teal-900\/40,
+.theme-soft .bg-teal-900\/60 { background-color: #ccfbf1 !important; }
+
+.theme-soft .hover\:bg-indigo-800\/60:hover { background-color: #c7d2fe !important; }
+.theme-soft .hover\:bg-indigo-900\/60:hover { background-color: #c7d2fe !important; }
+.theme-soft .hover\:bg-teal-800\/60:hover { background-color: #99f6e4 !important; }
+
+/* ── 틴트 패널 테두리 ─────────────────────────────────────── */
+.theme-soft .border-red-700,
+.theme-soft .border-red-700\/30,
+.theme-soft .border-red-700\/40,
+.theme-soft .border-red-500\/30,
+.theme-soft .border-red-500\/60   { border-color: #fca5a5 !important; }
+.theme-soft .border-yellow-700\/30,
+.theme-soft .border-yellow-700\/40 { border-color: #fde68a !important; }
+.theme-soft .border-green-700\/30,
+.theme-soft .border-green-700\/40,
+.theme-soft .border-green-500\/30 { border-color: #86efac !important; }
+.theme-soft .border-amber-700,
+.theme-soft .border-amber-700\/30,
+.theme-soft .border-amber-700\/40 { border-color: #fcd34d !important; }
+.theme-soft .border-indigo-700,
+.theme-soft .border-indigo-700\/40 { border-color: #a5b4fc !important; }
+.theme-soft .border-blue-500\/60   { border-color: #93c5fd !important; }
+.theme-soft .border-teal-700,
+.theme-soft .border-teal-700\/40,
+.theme-soft .border-teal-500\/30,
+.theme-soft .border-teal-500\/60   { border-color: #5eead4 !important; }
+
+/* ── 강조 텍스트(라이트 배경 위에서 충분한 대비 확보) ───── */
+.theme-soft .text-blue-200    { color: #1e3a8a !important; }
+.theme-soft .text-blue-300    { color: #1d4ed8 !important; }
+.theme-soft .text-blue-400    { color: #1e40af !important; }
+.theme-soft .text-indigo-200  { color: #3730a3 !important; }
+.theme-soft .text-purple-200  { color: #5b21b6 !important; }
+.theme-soft .text-orange-200  { color: #9a3412 !important; }
+.theme-soft .text-indigo-300  { color: #4338ca !important; }
+.theme-soft .text-purple-300  { color: #6d28d9 !important; }
+.theme-soft .text-violet-300  { color: #6d28d9 !important; }
+.theme-soft .text-amber-200   { color: #78350f !important; }
+.theme-soft .text-amber-300   { color: #b45309 !important; }
+.theme-soft .text-amber-400   { color: #b45309 !important; }
+.theme-soft .text-emerald-300 { color: #047857 !important; }
+.theme-soft .text-green-200   { color: #166534 !important; }
+.theme-soft .text-green-300   { color: #15803d !important; }
+.theme-soft .text-green-400   { color: #15803d !important; }
+.theme-soft .text-green-600   { color: #166534 !important; }
+.theme-soft .text-red-200     { color: #991b1b !important; }
+.theme-soft .text-red-300     { color: #b91c1c !important; }
+.theme-soft .text-red-400     { color: #dc2626 !important; }
+.theme-soft .text-red-600     { color: #b91c1c !important; }
+.theme-soft .text-rose-300    { color: #b91c1c !important; }
+.theme-soft .text-yellow-300  { color: #a16207 !important; }
+.theme-soft .text-yellow-400  { color: #b45309 !important; }
+.theme-soft .text-yellow-500  { color: #b45309 !important; }
+.theme-soft .text-yellow-600  { color: #92400e !important; }
+.theme-soft .text-orange-300  { color: #c2410c !important; }
+.theme-soft .text-orange-400  { color: #c2410c !important; }
+.theme-soft .text-cyan-300    { color: #0e7490 !important; }
+.theme-soft .text-teal-200    { color: #115e59 !important; }
+.theme-soft .text-teal-300    { color: #0f766e !important; }
+.theme-soft .text-teal-400    { color: #0f766e !important; }
+
+.theme-soft .hover\:text-blue-300:hover  { color: #1d4ed8 !important; }
+.theme-soft .hover\:text-blue-500:hover  { color: #2563eb !important; }
+
+/* Focus 테두리 */
+.theme-soft .focus\:border-blue-500:focus   { border-color: #3b82f6 !important; }
+.theme-soft .focus\:border-amber-500:focus  { border-color: #d97706 !important; }
+.theme-soft .focus\:border-indigo-500:focus { border-color: #4f46e5 !important; }
+.theme-soft .focus\:border-teal-500:focus   { border-color: #14b8a6 !important; }
+
+/* ── Verdict 배지 (다크에서 쓰던 연한 텍스트 → 짙은 톤으로) ─── */
+.theme-soft .badge-Supported  { background: #d1fae5 !important; color: #065f46 !important; border-color: #34d399 !important; }
+.theme-soft .badge-Contradict { background: #fee2e2 !important; color: #991b1b !important; border-color: #f87171 !important; }
+.theme-soft .badge-Weak       { background: #fef3c7 !important; color: #92400e !important; border-color: #fbbf24 !important; }
+
+/* ── Step 카드 ───────────────────────────────────────────── */
+.theme-soft .step-ok      { background: #ecfdf5 !important; border-color: #86efac !important; }
+.theme-soft .step-bad     { background: #fef2f2 !important; border-color: #fca5a5 !important; }
+.theme-soft .step-info    { background: #eff6ff !important; border-color: #93c5fd !important; }
+.theme-soft .step-neutral { background: #faf7f2 !important; border-color: #d9d2c4 !important; }
+
+/* ── 탭 하이라이트 ──────────────────────────────────────── */
+.theme-soft .tab-dart { color: #1d4ed8 !important; border-bottom-color: #3b82f6 !important; }
+.theme-soft .tab-ocr  { color: #4338ca !important; border-bottom-color: #6366f1 !important; }
+.theme-soft .tab-calc { color: #b45309 !important; border-bottom-color: #f59e0b !important; }
+
+/* =============================================================
+ * Polish layer — typography · elevation · controls (2026 refresh)
+ * 시각적 위계, 입체감, 컨트롤 상호작용을 다듬는 레이어.
+ * 팔레트(베이지/페이퍼)는 유지하고 마감만 끌어올린다.
+ * ============================================================= */
+
+/* ── 페이퍼 그라데이션 배경 ─────────────────────────────── */
+body.theme-soft {
+  background:
+    radial-gradient(1100px 560px at 100% -8%, #fcf9f4 0%, rgba(252, 249, 244, 0) 60%),
+    radial-gradient(900px 520px at -8% 2%, #f1ebe0 0%, rgba(241, 235, 224, 0) 55%),
+    #f5f1ea;
+  background-attachment: fixed;
+}
+
+/* ── 라운드 통일 ─────────────────────────────────────────── */
+.theme-soft .rounded-xl { border-radius: 16px !important; }
+.theme-soft .rounded-lg { border-radius: 12px !important; }
+.theme-soft .rounded-full { border-radius: 9999px !important; }
+
+/* ── 카드 입체감 + hover lift ───────────────────────────── */
+.theme-soft .bg-gray-900.border,
+.theme-soft .bg-white.border {
+  box-shadow:
+    0 1px 2px rgba(40, 35, 28, 0.04),
+    0 8px 20px -12px rgba(40, 35, 28, 0.14) !important;
+  transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+
+/* ── 헤더: sticky 글래스 바 ─────────────────────────────── */
+body.theme-soft > header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(245, 241, 234, 0.78);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom-color: #e7e0d2 !important;
+}
+
+/* 네비 알약 (헤더 안의 링크 버튼) */
+body.theme-soft > header a.bg-gray-800 {
+  background: #ffffff !important;
+  border-color: #e7e0d2 !important;
+  box-shadow: 0 1px 1px rgba(40, 35, 28, 0.03);
+  font-weight: 500;
+}
+body.theme-soft > header a.bg-gray-800:hover {
+  background: #faf7f2 !important;
+  border-color: #cfc7b6 !important;
+}
+
+/* ── 입력 컨트롤 ─────────────────────────────────────────── */
+.theme-soft input,
+.theme-soft textarea,
+.theme-soft select {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.theme-soft input:focus,
+.theme-soft textarea:focus,
+.theme-soft select:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16) !important;
+}
+.theme-soft input[type="checkbox"],
+.theme-soft input[type="radio"] {
+  accent-color: #2563eb;
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+/* ── 버튼 공통 상호작용 ─────────────────────────────────── */
+.theme-soft button {
+  transition: background-color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.08s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.theme-soft button:active:not(:disabled) { transform: translateY(1px); }
+.theme-soft button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.28);
+}
+
+/* 주요 액션 버튼 (파랑) — 그라데이션 + 입체 */
+.theme-soft .bg-blue-600 {
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25),
+    0 10px 20px -10px rgba(37, 99, 235, 0.55);
+}
+.theme-soft .hover\:bg-blue-500:hover,
+.theme-soft .hover\:bg-blue-700:hover {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%) !important;
+}
+
+/* ── 탭 활성 표시 ───────────────────────────────────────── */
+.theme-soft .tab-active {
+  border-bottom-color: #2563eb !important;
+  color: #1d4ed8 !important;
+}
+
+/* ── 통계 카드 숫자 가독성 ──────────────────────────────── */
+.theme-soft section .text-2xl { letter-spacing: -0.02em; }
+
+/* ── 코드/모노 블록 ─────────────────────────────────────── */
+.theme-soft pre.mono,
+.theme-soft .mono {
+  font-feature-settings: "tnum" 1;
+}
+.theme-soft pre {
+  background: #faf7f2 !important;
+}
+
+/* =============================================================
+ * Visual polish v2 — depth, brand accent, rhythm
+ * Scoped to .theme-soft; dark theme untouched. Pure restyle of
+ * existing Tailwind utility classes — no markup/binding changes.
+ * ============================================================= */
+body.theme-soft{
+  --sa:#0f766e;            /* brand accent — deep teal, pairs with paper */
+  --sa-ink:#0b5c55;
+  --sa-weak:rgba(15,118,110,.12);
+  --paper:#faf7f1;
+  --hair:#e8dfd0;          /* warm hairline */
+  --ink:#26231d;
+  background:
+    radial-gradient(1100px 460px at 50% -120px,#ffffff 0%,rgba(255,255,255,0) 70%),
+    #f4efe6;
+  background-attachment:fixed;
+}
+
+/* ── Cards: soft depth + warm hairline + rounder ─────────── */
+.theme-soft .rounded-xl{border-radius:16px !important;}
+.theme-soft .rounded-xl.border{
+  border-color:var(--hair) !important;
+  box-shadow:0 1px 2px rgba(38,35,29,.04),0 22px 46px -34px rgba(38,35,29,.30) !important;
+}
+.theme-soft .rounded-lg.border{border-color:var(--hair) !important;}
+
+/* ── Sticky, translucent header ──────────────────────────── */
+.theme-soft header{
+  position:sticky;top:0;z-index:40;
+  background:rgba(250,247,241,.85) !important;
+  -webkit-backdrop-filter:saturate(1.25) blur(10px);
+  backdrop-filter:saturate(1.25) blur(10px);
+  border-bottom:1px solid var(--hair) !important;
+  box-shadow:0 10px 30px -26px rgba(38,35,29,.55);
+}
+.theme-soft header a.rounded-lg{
+  background:#fff !important;border-color:var(--hair) !important;
+  color:#5a5346 !important;font-weight:600;
+}
+.theme-soft header a.rounded-lg:hover{
+  background:var(--sa) !important;color:#fff !important;border-color:var(--sa) !important;
+}
+
+/* ── Brand accent: primary button + active tab ───────────── */
+.theme-soft .bg-blue-600{background-color:var(--sa) !important;}
+.theme-soft .hover\:bg-blue-500:hover{background-color:var(--sa-ink) !important;}
+.theme-soft .text-blue-400,.theme-soft .text-blue-300{color:var(--sa) !important;}
+.theme-soft .tab-active{border-bottom:2px solid var(--sa) !important;color:var(--sa-ink) !important;}
+
+/* ── Section eyebrows get a small accent tick ────────────── */
+.theme-soft h2.uppercase{display:flex;align-items:center;}
+.theme-soft h2.uppercase::before{
+  content:"";width:16px;height:2px;border-radius:2px;background:var(--sa);
+  margin-right:10px;opacity:.9;flex:0 0 auto;
+}
+
+/* ── Inputs: accent focus ring, cleaner fields ───────────── */
+.theme-soft input,.theme-soft textarea,.theme-soft select{
+  background:#fff !important;border-color:var(--hair) !important;border-radius:10px !important;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.theme-soft input:focus,.theme-soft textarea:focus,.theme-soft select:focus{
+  outline:none !important;border-color:var(--sa) !important;
+  box-shadow:0 0 0 3px var(--sa-weak) !important;
+}
+.theme-soft button:focus-visible,.theme-soft a:focus-visible{
+  outline:2px solid var(--sa) !important;outline-offset:2px;
+}
+
+/* ── Small tiles: quiet lift on hover ────────────────────── */
+.theme-soft .rounded-lg.border{transition:box-shadow .15s ease,transform .15s ease;}
+.theme-soft .rounded-lg.border:hover{
+  box-shadow:0 10px 24px -18px rgba(38,35,29,.35) !important;
+}
+
+/* ── Numbers a touch tighter ─────────────────────────────── */
+.theme-soft .text-2xl,.theme-soft .text-3xl{letter-spacing:-.02em;}
+
+/* ── Pipeline flow (Run Overview) → numbered, connected steps ─
+ *  Scoped to the single md:grid-cols-5 container (line 238).    */
+.theme-soft .md\:grid-cols-5{counter-reset:pstep;}
+.theme-soft .md\:grid-cols-5 > div{
+  position:relative;counter-increment:pstep;padding-top:18px !important;
+  border-color:var(--hair) !important;
+}
+.theme-soft .md\:grid-cols-5 > div::before{
+  content:counter(pstep);
+  position:absolute;top:-10px;left:12px;width:21px;height:21px;border-radius:50%;
+  background:var(--sa);color:#fff;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 8px -2px rgba(15,118,110,.55);
+}
+@media(min-width:768px){
+  .theme-soft .md\:grid-cols-5 > div:not(:last-child)::after{
+    content:"\203A";position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+    color:var(--sa);font-weight:700;font-size:18px;line-height:1;z-index:2;
+  }
+}
+
+/* Primary button — teal gradient (override the earlier blue gradient;
+ * background-color alone loses to a gradient background-image). */
+.theme-soft .bg-blue-600{
+  background:linear-gradient(180deg,#15887e 0%,#0f766e 100%) !important;
+  box-shadow:0 1px 2px rgba(15,118,110,.25),0 10px 20px -10px rgba(15,118,110,.55) !important;
+}
+.theme-soft .hover\:bg-blue-500:hover,
+.theme-soft .hover\:bg-blue-700:hover{
+  background:linear-gradient(180deg,#0f766e 0%,#0b5c55 100%) !important;
+}
+
+/* ── Result tab bar: clearer active tab + teal count badges ─── */
+.theme-soft nav button{
+  padding:8px 12px 12px !important;border-radius:9px 9px 0 0;
+  transition:background .15s ease,color .15s ease;
+}
+.theme-soft nav button:hover{background:rgba(15,118,110,.06);}
+.theme-soft nav button.tab-active{background:var(--sa-weak);}
+.theme-soft nav button .rounded-full{
+  background:var(--sa-weak) !important;color:var(--sa-ink) !important;border-color:transparent !important;
+}
+
+/* =============================================================
+ * Legibility layer — contrast, definition, rhythm (2026-07)
+ * 팔레트는 유지하되 가시성만 끌어올린다. .theme-soft 스코프이므로
+ * 다크 테마에는 영향 없음. 소스 순서상 앞 규칙을 덮어쓴다.
+ * ============================================================= */
+
+/* ── 텍스트 램프: 흐릿한 회색을 한 단계씩 진하게 ─────────── */
+.theme-soft .text-white    { color: #16130e !important; }
+.theme-soft .text-gray-100 { color: #201d17 !important; }
+.theme-soft .text-gray-200 { color: #2c2820 !important; }
+.theme-soft .text-gray-300 { color: #3a352b !important; }
+.theme-soft .text-gray-400 { color: #55503f !important; }  /* 라벨 */
+.theme-soft .text-gray-500 { color: #6d6555 !important; }  /* 보조 설명 */
+.theme-soft .text-gray-600 { color: #857c6b !important; }  /* 최약 힌트 */
+
+/* ── 플레이스홀더: 읽히되 입력값과 구분되도록 ───────────── */
+.theme-soft input::placeholder,
+.theme-soft textarea::placeholder {
+  color: #9a9280 !important;
+  opacity: 1 !important;
+}
+.theme-soft .placeholder-gray-600::placeholder { color: #a49b88 !important; }
+.theme-soft .placeholder-gray-500::placeholder { color: #948b78 !important; }
+
+/* ── 헤어라인/테두리: 카드·필드 경계를 또렷하게 ─────────── */
+.theme-soft { --hair: #ddd3c0; }
+.theme-soft .border-gray-800 { border-color: #ddd3c0 !important; }
+.theme-soft .border-gray-700 { border-color: #d0c5ae !important; }
+.theme-soft input,
+.theme-soft textarea,
+.theme-soft select { border-color: #d0c5ae !important; }
+
+/* ── 배경 분리: 페이지 대비 카드가 확실히 떠 보이게 ─────── */
+body.theme-soft {
+  background:
+    radial-gradient(1100px 460px at 50% -120px, #ffffff 0%, rgba(255,255,255,0) 70%),
+    #efe8db !important;
+  background-attachment: fixed;
+}
+.theme-soft .bg-gray-950 { background-color: #efe8db !important; }
+.theme-soft .rounded-xl.border {
+  box-shadow: 0 1px 2px rgba(38,35,29,.05),
+              0 20px 42px -30px rgba(38,35,29,.34) !important;
+}
+
+/* ── 섹션 eyebrow: 위계가 드러나게 살짝 진하게/굵게 ─────── */
+.theme-soft h2.uppercase,
+.theme-soft h3.uppercase { color: #4a4437 !important; letter-spacing: .04em; }
+.theme-soft h2.uppercase::before { background: var(--sa); opacity: 1; }
+
+/* ── 가장 작은 글자만 소폭 확대(밀도 유지, 판독성 개선) ─── */
+.theme-soft .text-\[10px\] { font-size: 11px !important; line-height: 1.3 !important; }
+.theme-soft .text-\[11px\] { font-size: 12px !important; line-height: 1.4 !important; }
+
+/* ── 상태 배지: 라이트 배경에서 대비 강화 ───────────────── */
+.theme-soft .bg-emerald-900\/20 { background-color: #d1fae5 !important; }
+.theme-soft .text-emerald-300   { color: #05684b !important; }
+.theme-soft .bg-amber-900\/20    { background-color: #fef3c7 !important; }
+.theme-soft .text-amber-300      { color: #a15c07 !important; }
+
+/* ── 입력값 텍스트: 필드 내부 글자 또렷하게 ─────────────── */
+.theme-soft input,
+.theme-soft textarea { color: #221f18 !important; }
+
+/* =============================================================
+ * Legibility layer v2 — 대비 추가 강화 (2026-07)
+ * "글씨가 배경과 비슷하다"는 피드백 반영. 회색 램프를 더 진하게,
+ * 경계선을 더 또렷하게, 라벨/보조설명 가독성을 끌어올린다.
+ * 소스 맨 끝이라 앞의 모든 규칙을 덮어쓴다. (.theme-soft 스코프)
+ * ============================================================= */
+
+/* 회색 텍스트 램프: 배경(#efe8db/#fff)과 확실히 분리되게 한 단계 더 진하게 */
+.theme-soft .text-white    { color: #131009 !important; }
+.theme-soft .text-gray-100 { color: #191510 !important; }
+.theme-soft .text-gray-200 { color: #211d15 !important; }
+.theme-soft .text-gray-300 { color: #2c281e !important; }  /* 본문 */
+.theme-soft .text-gray-400 { color: #3f3928 !important; }  /* 라벨 */
+.theme-soft .text-gray-500 { color: #4e4735 !important; }  /* 보조 설명 */
+.theme-soft .text-gray-600 { color: #615945 !important; }  /* 최약 힌트 */
+
+/* 라벨/보조설명은 살짝 굵게 해서 얇은 획도 읽히게 */
+.theme-soft label,
+.theme-soft .text-gray-400,
+.theme-soft .text-gray-500 { font-weight: 500; }
+
+/* placeholder: 입력값과 구분되되 충분히 읽히도록 */
+.theme-soft input::placeholder,
+.theme-soft textarea::placeholder { color: #8b8268 !important; opacity: 1 !important; }
+.theme-soft .placeholder-gray-600::placeholder { color: #948a6f !important; }
+.theme-soft .placeholder-gray-500::placeholder { color: #857b62 !important; }
+
+/* 경계선: 카드·입력·구분선을 더 또렷하게 */
+.theme-soft { --hair: #c8bc9f; }
+.theme-soft .border-gray-950 { border-color: #beb193 !important; }
+.theme-soft .border-gray-900,
+.theme-soft .border-gray-800 { border-color: #c8bc9f !important; }
+.theme-soft .border-gray-700 { border-color: #b6ab8e !important; }
+.theme-soft .rounded-xl.border,
+.theme-soft .rounded-lg.border { border-color: #cabfa3 !important; }
+.theme-soft input,
+.theme-soft textarea,
+.theme-soft select { border-color: #b6ab8e !important; }
+
+/* 섹션 eyebrow(대문자 소제목): 위계가 확실히 보이게 진하고 굵게 */
+.theme-soft h2.uppercase,
+.theme-soft h3.uppercase { color: #37321f !important; font-weight: 700 !important; }
+
+/* 카드 배경을 페이지와 더 분리 (흰 카드 위 텍스트 대비 확보) */
+.theme-soft .bg-gray-900 { background-color: #ffffff !important; }
+.theme-soft .bg-gray-800 { background-color: #f7f2ea !important; }
+
+/* 흰 배경 위에서 아직 옅은 강조색 몇 가지를 한 단계 진하게 */
+.theme-soft .text-emerald-300 { color: #036049 !important; }
+.theme-soft .text-emerald-400 { color: #047857 !important; }
+.theme-soft .text-cyan-300    { color: #0b6884 !important; }
+.theme-soft .text-teal-300    { color: #0c675f !important; }
+.theme-soft .text-amber-300   { color: #955407 !important; }
+.theme-soft .text-amber-400   { color: #b45309 !important; }
+
+/* 그래프 상세/청크 패널: 라이트 테마에서 다크 잔여값(rgba(17,24,39,.6))을
+ * 제거하고, 감싸는 카드(#f7f2ea) 위에서 확실히 떠 보이는 흰 카드로 */
+.theme-soft .bg-gray-900\/60 { background-color: #ffffff !important; }
+.theme-soft .rounded-lg.border.bg-gray-900\/60,
+.theme-soft .rounded.border.bg-gray-900\/60 {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.6),
+              0 6px 16px -12px rgba(38,35,29,.35) !important;
+}
+/* 선택된 청크 상태: 옅은 하늘색 틴트 + 또렷한 경계 */
+.theme-soft .bg-sky-950\/20 { background-color: #e6f3fd !important; }
+.theme-soft .bg-sky-950\/30 { background-color: #dbeefd !important; }
+.theme-soft .border-sky-500 { border-color: #2f8fd6 !important; }
+/* 상세 패널 안쪽 라벨/pill 대비 */
+.theme-soft .bg-gray-900\/60 .border-gray-600 { border-color: #b6ab8e !important; }
+
+/* 리스트/타일 카드(atom·relation 리스트, 청크 타일): 다크 잔여값 →
+ * 감싸는 카드(#f7f2ea) 위에서 떠 보이는 흰 카드로 통일 */
+.theme-soft .bg-gray-950\/40,
+.theme-soft .bg-gray-950\/50,
+.theme-soft .bg-gray-950\/60,
+.theme-soft .bg-gray-950\/70 { background-color: #ffffff !important; }
+
+/* 선택 강조(atom 결론 노드 선택): 옅은 보라 틴트 + 또렷한 경계 */
+.theme-soft .bg-purple-950\/20 { background-color: #f3e8ff !important; }
+.theme-soft .bg-purple-950\/40 { background-color: #ebddfb !important; }
+.theme-soft .border-purple-500 { border-color: #8b5cf6 !important; }
+.theme-soft .border-purple-600\/50 { border-color: #a78bda !important; }
+.theme-soft .text-purple-100 { color: #4c1d95 !important; }

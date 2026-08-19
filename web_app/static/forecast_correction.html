@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>영업이익 전망 교정 · RippleRepair</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: rgba(13, 28, 45, 0.88);
+      --panel-strong: #102338;
+      --panel-soft: rgba(25, 50, 73, 0.62);
+      --line: rgba(148, 177, 202, 0.18);
+      --line-strong: rgba(148, 177, 202, 0.32);
+      --text: #ecf5fb;
+      --muted: #93aabd;
+      --accent: #3dd8ba;
+      --accent-strong: #20bfa2;
+      --blue: #75b9ff;
+      --amber: #f4c66d;
+      --red: #ff8d8d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.26);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% -8%, rgba(43, 178, 154, 0.19), transparent 30rem),
+        radial-gradient(circle at 93% 12%, rgba(76, 133, 210, 0.17), transparent 27rem),
+        linear-gradient(145deg, #06101d 0%, #091827 48%, #06101d 100%);
+      font-family: Pretendard, "Noto Sans KR", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input, textarea { font: inherit; }
+
+    button, a, input, textarea, [tabindex] { outline-color: var(--accent); }
+
+    a { color: inherit; text-decoration: none; }
+
+    .shell { width: min(1480px, calc(100% - 32px)); margin: 0 auto; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: rgba(6, 16, 29, 0.78);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #031813;
+      background: linear-gradient(135deg, #73efd5, #27b89b);
+      box-shadow: 0 8px 24px rgba(39, 184, 155, 0.25);
+      font-weight: 900;
+    }
+
+    .brand-copy { min-width: 0; }
+    .brand-title { margin: 0; font-size: 14px; font-weight: 800; letter-spacing: 0.02em; }
+    .brand-subtitle { margin: 2px 0 0; color: var(--muted); font-size: 11px; white-space: nowrap; }
+
+    .nav { margin-left: auto; display: flex; align-items: center; gap: 7px; overflow-x: auto; }
+    .nav a {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      color: var(--muted);
+      font-size: 12px;
+      transition: .18s ease;
+    }
+    .nav a:hover { color: var(--text); border-color: var(--line); background: rgba(255,255,255,.035); }
+    .nav a.active { color: #a8f7e7; border-color: rgba(61,216,186,.28); background: rgba(61,216,186,.09); }
+
+    main { padding: 46px 0 64px; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 13px;
+      color: #98e8d8;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 { margin: 0; font-size: clamp(27px, 4vw, 44px); line-height: 1.13; letter-spacing: -0.035em; }
+    .hero p { max-width: 710px; margin: 14px 0 0; color: var(--muted); font-size: 15px; line-height: 1.72; }
+
+    .flow-pill {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(8, 22, 36, .74);
+      color: #c5d5e2;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .flow-pill b { color: var(--accent); }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(360px, .84fr) minmax(500px, 1.3fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 37, 57, .48);
+    }
+
+    .card-head h2 { margin: 0; font-size: 15px; letter-spacing: -.01em; }
+    .card-head p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .card-body { padding: 22px; }
+
+    .step {
+      min-width: 27px;
+      height: 27px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(61,216,186,.33);
+      border-radius: 9px;
+      color: #92eddb;
+      background: rgba(61,216,186,.08);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .dropzone {
+      display: grid;
+      place-items: center;
+      min-height: 150px;
+      padding: 22px;
+      border: 1px dashed rgba(117,185,255,.42);
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(37,76,106,.25), rgba(13,30,47,.25));
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .dropzone:hover, .dropzone.dragging {
+      border-color: var(--accent);
+      background: rgba(61,216,186,.07);
+      transform: translateY(-1px);
+    }
+
+    .drop-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 10px;
+      border-radius: 13px;
+      color: var(--blue);
+      background: rgba(117,185,255,.10);
+      font-size: 20px;
+    }
+    .dropzone strong { display: block; font-size: 13px; }
+    .dropzone span { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; }
+
+    .file-meta {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(61,216,186,.20);
+      border-radius: 10px;
+      background: rgba(61,216,186,.055);
+      color: #b6cbd9;
+      font-size: 11px;
+    }
+    .file-meta.visible { display: flex; }
+    .file-meta b { color: #9aebdb; font-weight: 700; }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0;
+      color: #6f879a;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+    }
+    .divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    .label-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    label, .field-label { color: #c6d5df; font-size: 12px; font-weight: 700; }
+    .hint { color: #6f889b; font-size: 10px; font-weight: 500; }
+
+    textarea, input[type="number"] {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: 11px;
+      color: var(--text);
+      background: rgba(5, 15, 26, .64);
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    textarea:focus, input[type="number"]:focus {
+      border-color: rgba(61,216,186,.72);
+      box-shadow: 0 0 0 3px rgba(61,216,186,.08);
+      outline: none;
+    }
+    textarea {
+      min-height: 255px;
+      padding: 14px;
+      resize: vertical;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.65;
+      tab-size: 2;
+    }
+    input[type="number"] { height: 42px; padding: 0 12px; font-size: 12px; }
+
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .mode-option { position: relative; cursor: pointer; }
+    .mode-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .mode-copy {
+      display: block;
+      min-height: 76px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(8,20,32,.42);
+      transition: .18s ease;
+    }
+    .mode-copy strong { display: block; color: #dceaf2; font-size: 12px; }
+    .mode-copy small { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.45; font-weight: 500; }
+    .mode-option input:checked + .mode-copy { border-color: rgba(61,216,186,.58); background: rgba(61,216,186,.075); }
+    .mode-option input:focus-visible + .mode-copy { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .actions { display: flex; gap: 9px; margin-top: 20px; }
+    .button {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 0 15px;
+      color: #d8e6ef;
+      background: rgba(255,255,255,.035);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 780;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .button:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--line-strong); background: rgba(255,255,255,.065); }
+    .button:disabled { opacity: .5; cursor: not-allowed; }
+    .button.primary { flex: 1; border-color: transparent; color: #041913; background: linear-gradient(135deg, #6debd1, #2ec4a6); }
+    .button.primary:hover:not(:disabled) { background: linear-gradient(135deg, #86f1dc, #3dd0b2); }
+    .button.small { min-height: 34px; padding: 0 11px; font-size: 11px; }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      display: none;
+      border: 2px solid rgba(3,24,19,.22);
+      border-top-color: #041913;
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+    .working .spinner { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 20px;
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #657c8f; }
+    .status-line.success { color: #8be6d3; }
+    .status-line.success .status-dot { background: var(--accent); box-shadow: 0 0 0 4px rgba(61,216,186,.09); }
+    .status-line.error { color: var(--red); }
+    .status-line.error .status-dot { background: var(--red); }
+    .status-line.busy .status-dot { background: var(--amber); animation: pulse 1.2s ease infinite; }
+    @keyframes pulse { 50% { opacity: .35; } }
+
+    .output-card { min-height: 696px; }
+    .output-actions { display: none; flex-wrap: wrap; gap: 7px; }
+    .output-actions.visible { display: flex; }
+
+    .empty-state {
+      min-height: 605px;
+      display: grid;
+      place-items: center;
+      padding: 46px;
+      text-align: center;
+    }
+    .empty-state.hidden { display: none; }
+    .empty-graphic {
+      width: 104px;
+      height: 104px;
+      position: relative;
+      margin: 0 auto 23px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(117,185,255,.08), rgba(61,216,186,.08));
+    }
+    .empty-graphic::before, .empty-graphic::after {
+      content: "";
+      position: absolute;
+      left: 25px;
+      right: 25px;
+      height: 1px;
+      background: rgba(117,185,255,.45);
+    }
+    .empty-graphic::before { top: 39px; box-shadow: 0 12px 0 rgba(117,185,255,.25), 0 24px 0 rgba(117,185,255,.18); }
+    .empty-graphic::after { width: 17px; left: auto; right: 17px; top: 15px; background: var(--accent); transform: rotate(-35deg); }
+    .empty-state h3 { margin: 0; font-size: 16px; }
+    .empty-state p { max-width: 440px; margin: 10px auto 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+
+    .progress-panel { display: none; padding: 24px 22px; }
+    .progress-panel.visible { display: block; }
+    .progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .progress-head h3 { margin: 0; font-size: 14px; }
+    .progress-head span { color: var(--amber); font-size: 11px; }
+    .progress-list { display: grid; gap: 9px; }
+    .progress-item { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; background: rgba(5,16,27,.38); }
+    .progress-icon { width: 18px; height: 18px; display: grid; place-items: center; border: 1px solid #557084; border-radius: 50%; color: #8aa2b4; font-size: 10px; }
+    .progress-item.active { border-color: rgba(244,198,109,.38); background: rgba(244,198,109,.06); }
+    .progress-item.active .progress-icon { border-color: var(--amber); color: var(--amber); animation: pulse 1.2s ease infinite; }
+    .progress-item.completed .progress-icon { border-color: var(--accent); color: var(--accent); }
+    .progress-item.failed { border-color: rgba(255,141,141,.4); }
+    .progress-item.failed .progress-icon { border-color: var(--red); color: var(--red); }
+    .progress-item strong { display: block; color: #dceaf3; font-size: 12px; }
+    .progress-item small { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.45; }
+
+    .result { display: none; }
+    .result.visible { display: block; }
+
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+    .summary-item {
+      min-height: 88px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(5,16,27,.46);
+    }
+    .summary-item span { display: block; color: var(--muted); font-size: 10px; }
+    .summary-item strong { display: block; margin-top: 8px; color: #f1f8fc; font-size: 17px; letter-spacing: -.02em; }
+    .summary-item small { display: block; margin-top: 4px; color: #728a9d; font-size: 9px; line-height: 1.35; }
+    .summary-item.review strong { color: var(--amber); }
+    .summary-item.clear strong { color: var(--accent); }
+
+    .section-block { margin-top: 18px; }
+    .section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
+    .section-title h3 { margin: 0; color: #d8e7ef; font-size: 12px; }
+    .count-badge { padding: 3px 7px; border-radius: 999px; color: #8aa2b4; background: rgba(255,255,255,.045); font-size: 9px; }
+
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .compare-pane { min-width: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: rgba(4,14,24,.55); }
+    .compare-head { display: flex; justify-content: space-between; align-items: center; padding: 9px 11px; border-bottom: 1px solid var(--line); color: #8da4b5; font-size: 10px; }
+    .compare-head b { color: #caddE7; }
+    .markdown-output {
+      width: 100%;
+      min-height: 275px;
+      max-height: 470px;
+      padding: 13px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #bcd0dc;
+      resize: vertical;
+      font-size: 11px;
+      line-height: 1.58;
+    }
+    .compare-pane.corrected { border-color: rgba(61,216,186,.24); }
+    .compare-pane.corrected .markdown-output { color: #d6eee8; }
+
+    .change-list, .review-list { display: grid; gap: 8px; }
+    .change-item, .review-item {
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(7,18,30,.53);
+    }
+    .change-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .change-top strong { font-size: 11px; }
+    .factor { color: #91e9d7; font-size: 10px; font-family: ui-monospace, monospace; }
+    .change-lines { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin-top: 9px; }
+    .change-lines code {
+      min-width: 0;
+      overflow-x: auto;
+      padding: 7px 8px;
+      border-radius: 7px;
+      color: #aabecb;
+      background: rgba(0,0,0,.22);
+      font-size: 9px;
+      white-space: pre;
+    }
+    .change-lines code.after { color: #a9e8db; background: rgba(61,216,186,.055); }
+    .arrow { color: #577184; font-size: 11px; }
+    .empty-list { padding: 18px; border: 1px dashed var(--line); border-radius: 11px; color: #71899b; text-align: center; font-size: 11px; }
+
+    .review-item { border-color: rgba(244,198,109,.20); background: rgba(244,198,109,.035); }
+    .review-item strong { display: block; color: #f0cd86; font-size: 11px; line-height: 1.55; }
+    .review-item small { display: block; margin-top: 5px; color: #8299aa; font-size: 9px; }
+    .review-list.clear .review-item { border-color: rgba(61,216,186,.18); background: rgba(61,216,186,.035); }
+    .review-list.clear .review-item strong { color: #88dfce; }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 20;
+      max-width: min(360px, calc(100% - 44px));
+      padding: 11px 14px;
+      border: 1px solid rgba(61,216,186,.28);
+      border-radius: 11px;
+      color: #d9f5ef;
+      background: rgba(10, 31, 43, .96);
+      box-shadow: var(--shadow);
+      font-size: 11px;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: .2s ease;
+    }
+    .toast.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1120px) {
+      .workspace { grid-template-columns: 1fr; }
+      .output-card { min-height: 620px; }
+      .empty-state { min-height: 520px; }
+    }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 20px, 1480px); }
+      .topbar-inner { min-height: 60px; }
+      .brand-subtitle { display: none; }
+      .nav a:not(.active) { display: none; }
+      main { padding-top: 30px; }
+      .hero { grid-template-columns: 1fr; gap: 15px; }
+      .flow-pill { width: fit-content; }
+      .card-head, .card-body { padding: 17px; }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .change-lines { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); text-align: center; }
+      .output-actions .button { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="/" aria-label="영업이익 교정으로 이동">
+        <span class="brand-mark">R</span>
+        <span class="brand-copy">
+          <span class="brand-title">RippleRepair</span>
+          <span class="brand-subtitle">Financial fact correction</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="주요 화면">
+        <a class="active" href="/forecast-correction" aria-current="page">영업이익 교정</a>
+        <a href="/docs" target="_blank" rel="noreferrer">API 문서</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Operating profit forecast</div>
+        <h1>마크다운을 넣으면,<br />숫자와 파급 문장을 함께 교정합니다.</h1>
+        <p>문서 안의 최신 컨센서스를 자동 추출해 영업이익 전망의 자릿수 오류를 판정하고, FactReasoner로 같은 수치를 인용한 문장까지 안전 범위에서 반영합니다.</p>
+      </div>
+      <div class="flow-pill"><b>Markdown</b><span>→</span><span>Consensus 추출</span><span>→</span><b>교정 Markdown</b></div>
+    </section>
+
+    <div class="workspace">
+      <form id="correctionForm" class="card" novalidate>
+        <div class="card-head">
+          <div>
+            <h2>교정할 문서</h2>
+            <p>파일을 고르거나 Markdown 본문을 직접 붙여넣으세요.</p>
+          </div>
+          <span class="step">01</span>
+        </div>
+        <div class="card-body">
+          <input id="filePicker" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain" hidden />
+          <div id="dropZone" class="dropzone" role="button" tabindex="0" aria-label="마크다운 파일 선택 또는 드롭">
+            <div>
+              <div class="drop-icon" aria-hidden="true">↥</div>
+              <strong>Markdown 파일 선택</strong>
+              <span>.md · .markdown · .txt / 최대 5 MB</span>
+            </div>
+          </div>
+          <div id="fileMeta" class="file-meta" aria-live="polite">
+            <span><b id="fileName"></b> <span id="fileSize"></span></span>
+            <button id="removeFileButton" class="button small" type="button">선택 해제</button>
+          </div>
+
+          <div class="divider">또는 직접 입력</div>
+
+          <div class="field">
+            <div class="label-row">
+              <label for="markdownInput">Markdown 본문</label>
+              <button id="sampleButton" class="button small" type="button">샘플 채우기</button>
+            </div>
+            <textarea id="markdownInput" placeholder="## 2026년 최근 컨센서스 전망치 분석&#10;| Date | 영업이익 (원) |&#10;|---|---:|&#10;| 2026-06-30 | 35,000,000,000,000 |&#10;&#10;## 2026년 연간 영업이익 전망&#10;- 중간: ..." spellcheck="false"></textarea>
+          </div>
+
+          <div class="field">
+            <div class="label-row">
+              <span class="field-label">교정 모드</span>
+              <span class="hint">컨센서스·배율 계산은 결정론적, 사실 판단·교정·최종 검토는 LLM입니다.</span>
+            </div>
+            <div class="mode-grid">
+              <label class="mode-option">
+                <input type="radio" name="graph_mode" value="llm" checked />
+                <span class="mode-copy"><strong>LLM 정밀</strong><small>전체 관계 후보 · 재현성 우선</small></span>
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="graph_mode" value="fast" />
+                <span class="mode-copy"><strong>Fast</strong><small>다국어 embedding gate · 교정 범위 유지</small></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="label-row">
+              <label for="consensusInput">컨센서스 직접 지정 <span class="hint">(선택)</span></label>
+              <span class="hint">비워두면 Markdown에서 추출</span>
+            </div>
+            <input id="consensusInput" type="number" step="any" placeholder="원 단위 예: 35000000000000" />
+          </div>
+
+          <div class="actions">
+            <button id="clearButton" class="button" type="button">초기화</button>
+            <button id="runButton" class="button primary" type="submit">
+              <span class="spinner" aria-hidden="true"></span>
+              <span id="runButtonLabel">교정 실행</span>
+            </button>
+          </div>
+          <div id="statusLine" class="status-line" role="status" aria-live="polite">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="statusText">Markdown을 입력하면 교정을 시작할 수 있습니다.</span>
+          </div>
+        </div>
+      </form>
+
+      <section class="card output-card" aria-labelledby="resultTitle">
+        <div class="card-head">
+          <div>
+            <h2 id="resultTitle">교정 결과</h2>
+            <p>컨센서스, 자릿수 변경, FactReasoner 반영과 수동 검토 항목을 확인합니다.</p>
+          </div>
+          <div id="outputActions" class="output-actions">
+            <button id="copyButton" class="button small" type="button">교정본 복사</button>
+            <button id="downloadButton" class="button small" type="button">.md 다운로드</button>
+          </div>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <div>
+            <div class="empty-graphic" aria-hidden="true"></div>
+            <h3>아직 교정 결과가 없습니다</h3>
+            <p>왼쪽에서 Markdown 파일을 선택하고 실행하면 원문과 교정본을 나란히 보여줍니다. 원본 파일은 서버에서 덮어쓰지 않습니다.</p>
+          </div>
+        </div>
+
+        <div id="progressPanel" class="progress-panel" aria-live="polite">
+          <div class="progress-head">
+            <h3>실시간 처리 단계</h3>
+            <span id="progressElapsed">대기 중</span>
+          </div>
+          <div id="progressList" class="progress-list"></div>
+        </div>
+
+        <div id="result" class="result card-body">
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span>추출 컨센서스</span>
+              <strong id="consensusValue">-</strong>
+              <small id="consensusMeta">-</small>
+            </div>
+            <div class="summary-item">
+              <span>자릿수 변경 셀</span>
+              <strong id="scaleCount">0</strong>
+            <small>LLM이 컨센서스와 자릿수 오류를 판단</small>
+            </div>
+            <div class="summary-item">
+              <span>파급 교정</span>
+              <strong id="rippleCount">0</strong>
+              <small id="rippleMeta">FactReasoner 반영</small>
+            </div>
+            <div id="reviewSummary" class="summary-item">
+              <span>검토 상태</span>
+              <strong id="reviewStatus">-</strong>
+              <small id="reviewMeta">-</small>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-title">
+              <h3>원문 / 교정본</h3>
+              <span id="lineMeta" class="count-badge">-</span>
+            </div>
+            <div class="compare-grid">
+              <div class="compare-pane">
+                <div class="compare-head"><b>원문</b><span>읽기 전용</span></div>
+                <textarea id="originalOutput" class="markdown-output" readonly spellcheck="false"></textarea>
+              </div>
+              <div class="compare-pane corrected">
+                <div class="compare-head"><b>교정 Markdown</b><span>다운로드 가능</span></div>
+                <textarea id="correctedOutput" class="markdown-output" readonly spellcheck="false"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-title">
+              <h3>자동 적용된 변경</h3>
+              <span id="changeCount" class="count-badge">0건</span>
+            </div>
+            <div id="changeList" class="change-list"></div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-title">
+              <h3>수동 검토</h3>
+              <span id="reviewCount" class="count-badge">0건</span>
+            </div>
+            <div id="reviewList" class="review-list"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const API_URL = "/api/forecasts/operating-profit/correct";
+      const ASYNC_API_URL = "/api/forecasts/operating-profit/correct/async";
+      const MAX_FILE_BYTES = 5 * 1024 * 1024;
+      const ACCEPTED_EXTENSIONS = [".md", ".markdown", ".txt"];
+      const SAMPLE_MARKDOWN = `# 반도체 기업 2026년 전망
+
+## 2026년 최근 컨센서스 전망치 분석
+
+| Date | 영업이익 (원) |
+|---|---:|
+| 2026-05-31 | 34,000,000,000,000 |
+| 2026-06-30 | 35,000,000,000,000 |
+
+## 2026년 연간 영업이익 전망
+
+- **상방:** 4,000,000,000,000,000원
+- **중간:** 3,500,000,000,000,000원
+- **하방:** 3,000,000,000,000,000원
+
+중간 시나리오의 2026년 영업이익 전망은 3,500조원으로 추정한다.
+`;
+
+      const byId = (id) => document.getElementById(id);
+      const ui = {
+        form: byId("correctionForm"),
+        filePicker: byId("filePicker"),
+        dropZone: byId("dropZone"),
+        fileMeta: byId("fileMeta"),
+        fileName: byId("fileName"),
+        fileSize: byId("fileSize"),
+        removeFileButton: byId("removeFileButton"),
+        markdownInput: byId("markdownInput"),
+        consensusInput: byId("consensusInput"),
+        sampleButton: byId("sampleButton"),
+        clearButton: byId("clearButton"),
+        runButton: byId("runButton"),
+        runButtonLabel: byId("runButtonLabel"),
+        statusLine: byId("statusLine"),
+        statusText: byId("statusText"),
+        emptyState: byId("emptyState"),
+        progressPanel: byId("progressPanel"),
+        progressList: byId("progressList"),
+        progressElapsed: byId("progressElapsed"),
+        result: byId("result"),
+        outputActions: byId("outputActions"),
+        originalOutput: byId("originalOutput"),
+        correctedOutput: byId("correctedOutput"),
+        consensusValue: byId("consensusValue"),
+        consensusMeta: byId("consensusMeta"),
+        scaleCount: byId("scaleCount"),
+        rippleCount: byId("rippleCount"),
+        rippleMeta: byId("rippleMeta"),
+        reviewSummary: byId("reviewSummary"),
+        reviewStatus: byId("reviewStatus"),
+        reviewMeta: byId("reviewMeta"),
+        lineMeta: byId("lineMeta"),
+        changeCount: byId("changeCount"),
+        changeList: byId("changeList"),
+        reviewCount: byId("reviewCount"),
+        reviewList: byId("reviewList"),
+        copyButton: byId("copyButton"),
+        downloadButton: byId("downloadButton"),
+        toast: byId("toast"),
+      };
+
+      let selectedFileName = "";
+      let selectedFileSize = 0;
+      let latestResult = null;
+      let toastTimer = null;
+
+      const formatBytes = (bytes) => {
+        if (!Number.isFinite(bytes) || bytes <= 0) return "";
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+      };
+
+      const formatNumber = (value) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "-";
+        return new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 6 }).format(number);
+      };
+
+      const formatWon = (value) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "추출 안 됨";
+        const absolute = Math.abs(number);
+        if (absolute >= 1e12) return `${formatNumber(number / 1e12)}조원`;
+        if (absolute >= 1e8) return `${formatNumber(number / 1e8)}억원`;
+        return `${formatNumber(number)}원`;
+      };
+
+      const lineCount = (text) => text ? text.split(/\r?\n/).length : 0;
+
+      const showToast = (message) => {
+        ui.toast.textContent = message;
+        ui.toast.classList.add("visible");
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => ui.toast.classList.remove("visible"), 2200);
+      };
+
+      const setStatus = (type, message) => {
+        ui.statusLine.className = `status-line${type ? ` ${type}` : ""}`;
+        ui.statusText.textContent = message;
+      };
+
+      const setWorking = (working) => {
+        ui.runButton.disabled = working;
+        ui.clearButton.disabled = working;
+        ui.sampleButton.disabled = working;
+        ui.runButton.classList.toggle("working", working);
+        ui.runButtonLabel.textContent = working ? "교정 중…" : "교정 실행";
+      };
+
+      const resetFileMeta = () => {
+        selectedFileName = "";
+        selectedFileSize = 0;
+        ui.filePicker.value = "";
+        ui.fileName.textContent = "";
+        ui.fileSize.textContent = "";
+        ui.fileMeta.classList.remove("visible");
+      };
+
+      const resetResult = () => {
+        latestResult = null;
+        ui.result.classList.remove("visible");
+        ui.emptyState.classList.remove("hidden");
+        ui.progressPanel.classList.remove("visible");
+        ui.progressList.textContent = "";
+        ui.progressElapsed.textContent = "대기 중";
+        ui.outputActions.classList.remove("visible");
+        ui.originalOutput.value = "";
+        ui.correctedOutput.value = "";
+        ui.changeList.textContent = "";
+        ui.reviewList.textContent = "";
+      };
+
+      const STAGE_TITLES = {
+        queued: "작업 시작",
+        scale_analysis: "컨센서스·자릿수 분석",
+        fact_graph: "Fact Graph 생성",
+        pair_gate: "NLI 후보 Pair Gate",
+        cascade: "연결 사실 영향 분석",
+        atom_correction: "Fact Atom 교정",
+        final_review: "최종 변경 재검토",
+        completed: "완료",
+      };
+
+      const renderProgress = (job) => {
+        const progress = Array.isArray(job && job.progress) ? job.progress : [];
+        if (!progress.length) return;
+        ui.emptyState.classList.add("hidden");
+        ui.progressPanel.classList.add("visible");
+        ui.progressList.textContent = "";
+        progress.forEach((item) => {
+          const row = document.createElement("article");
+          const state = item.state === "active" && job.status === "failed" ? "failed" :
+            item.state === "active" && job.status === "completed" ? "completed" : (item.state || "completed");
+          row.className = `progress-item ${state}`;
+          const icon = document.createElement("span");
+          icon.className = "progress-icon";
+          icon.textContent = state === "completed" ? "✓" : state === "failed" ? "!" : "•";
+          const text = document.createElement("div");
+          const title = document.createElement("strong");
+          title.textContent = STAGE_TITLES[item.stage] || item.stage || "처리 중";
+          const description = document.createElement("small");
+          description.textContent = item.message || "처리 중입니다.";
+          text.append(title, description);
+          row.append(icon, text);
+          ui.progressList.appendChild(row);
+        });
+        const active = progress[progress.length - 1];
+        const start = Number(job.created_at) * 1000;
+        const elapsed = Number.isFinite(start) ? Math.floor((Date.now() - start) / 1000) : 0;
+        ui.progressElapsed.textContent = job.status === "completed" ? "완료" : job.status === "failed" ? "실패" : `${elapsed}초 경과`;
+        if (active && job.status === "running") setStatus("busy", active.message || "LLM 정밀 교정 중입니다.");
+      };
+
+      const validateFile = (file) => {
+        const lowerName = file.name.toLowerCase();
+        if (!ACCEPTED_EXTENSIONS.some((extension) => lowerName.endsWith(extension))) {
+          throw new Error(".md, .markdown 또는 .txt 파일만 선택할 수 있습니다.");
+        }
+        if (file.size > MAX_FILE_BYTES) {
+          throw new Error("파일 크기는 5 MB 이하여야 합니다.");
+        }
+      };
+
+      const loadFile = async (file) => {
+        try {
+          validateFile(file);
+          const text = await file.text();
+          if (!text.trim()) throw new Error("선택한 파일이 비어 있습니다.");
+          ui.markdownInput.value = text;
+          selectedFileName = file.name;
+          selectedFileSize = file.size;
+          ui.fileName.textContent = file.name;
+          ui.fileSize.textContent = `· ${formatBytes(file.size)}`;
+          ui.fileMeta.classList.add("visible");
+          resetResult();
+          setStatus("", "파일을 읽었습니다. 교정 모드와 컨센서스를 확인해 주세요.");
+        } catch (error) {
+          resetFileMeta();
+          setStatus("error", error.message || "파일을 읽지 못했습니다.");
+        }
+      };
+
+      const openFilePicker = () => ui.filePicker.click();
+      ui.dropZone.addEventListener("click", openFilePicker);
+      ui.dropZone.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openFilePicker();
+        }
+      });
+      ui.filePicker.addEventListener("change", () => {
+        if (ui.filePicker.files && ui.filePicker.files[0]) loadFile(ui.filePicker.files[0]);
+      });
+      ["dragenter", "dragover"].forEach((name) => ui.dropZone.addEventListener(name, (event) => {
+        event.preventDefault();
+        ui.dropZone.classList.add("dragging");
+      }));
+      ["dragleave", "drop"].forEach((name) => ui.dropZone.addEventListener(name, (event) => {
+        event.preventDefault();
+        ui.dropZone.classList.remove("dragging");
+      }));
+      ui.dropZone.addEventListener("drop", (event) => {
+        const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+        if (file) loadFile(file);
+      });
+
+      ui.removeFileButton.addEventListener("click", () => {
+        resetFileMeta();
+        setStatus("", "파일 연결만 해제했습니다. 입력된 Markdown은 그대로 유지됩니다.");
+      });
+
+      ui.sampleButton.addEventListener("click", () => {
+        resetFileMeta();
+        resetResult();
+        ui.markdownInput.value = SAMPLE_MARKDOWN;
+        ui.consensusInput.value = "";
+        setStatus("", "100배 자릿수 오류와 재인용 문장이 포함된 샘플을 채웠습니다.");
+      });
+
+      ui.clearButton.addEventListener("click", () => {
+        ui.form.reset();
+        ui.markdownInput.value = "";
+        resetFileMeta();
+        resetResult();
+        setStatus("", "Markdown을 입력하면 교정을 시작할 수 있습니다.");
+      });
+
+      const appendEmpty = (container, message) => {
+        const item = document.createElement("div");
+        item.className = "empty-list";
+        item.textContent = message;
+        container.appendChild(item);
+      };
+
+      const appendChange = (container, title, factor, original, corrected) => {
+        const item = document.createElement("article");
+        item.className = "change-item";
+        const top = document.createElement("div");
+        top.className = "change-top";
+        const heading = document.createElement("strong");
+        heading.textContent = title;
+        const factorNode = document.createElement("span");
+        factorNode.className = "factor";
+        factorNode.textContent = factor;
+        top.append(heading, factorNode);
+
+        const lines = document.createElement("div");
+        lines.className = "change-lines";
+        const before = document.createElement("code");
+        before.textContent = original || "(원문 정보 없음)";
+        const arrow = document.createElement("span");
+        arrow.className = "arrow";
+        arrow.textContent = "→";
+        const after = document.createElement("code");
+        after.className = "after";
+        after.textContent = corrected || "(교정문 정보 없음)";
+        lines.append(before, arrow, after);
+        item.append(top, lines);
+        container.appendChild(item);
+      };
+
+      const reviewReason = (item) => {
+        if (typeof item === "string") return item;
+        return String(item && (item.reason || item.error || item.statement) || "검토 사유가 제공되지 않았습니다.");
+      };
+
+      const reviewContext = (item) => {
+        if (!item || typeof item !== "object") return "";
+        return [
+          item.year ? `${item.year}년` : "",
+          item.line ? `${item.line}행` : "",
+          item.node_id ? `node ${item.node_id}` : "",
+          item.chunk_id ? `chunk ${item.chunk_id}` : "",
+        ].filter(Boolean).join(" · ");
+      };
+
+      const appendReview = (container, item) => {
+        const row = document.createElement("article");
+        row.className = "review-item";
+        const reason = document.createElement("strong");
+        reason.textContent = reviewReason(item);
+        row.appendChild(reason);
+        const context = reviewContext(item);
+        if (context) {
+          const meta = document.createElement("small");
+          meta.textContent = context;
+          row.appendChild(meta);
+        }
+        container.appendChild(row);
+      };
+
+      const findConsensusDate = (scale) => {
+        const corrections = Array.isArray(scale.corrections) ? scale.corrections : [];
+        const correctionWithDate = corrections.find((item) => item && item.consensus_date);
+        if (correctionWithDate) return correctionWithDate.consensus_date;
+        if (scale.consensus && scale.consensus.date) return scale.consensus.date;
+        const blocks = scale.consensus_extraction && Array.isArray(scale.consensus_extraction.blocks)
+          ? scale.consensus_extraction.blocks : [];
+        const dates = blocks.map((block) => block && block.latest && block.latest.date).filter(Boolean).sort();
+        return dates.length ? dates[dates.length - 1] : "";
+      };
+
+      const renderResult = (data) => {
+        latestResult = data;
+        const scale = data.scale_correction || {};
+        const factreasoner = data.factreasoner || {};
+        const stats = data.stats || {};
+        const corrections = Array.isArray(scale.corrections) ? scale.corrections : [];
+        const applied = Array.isArray(factreasoner.applied_corrections) ? factreasoner.applied_corrections : [];
+        const scaleReviews = Array.isArray(scale.review_items) ? scale.review_items : [];
+        const factReviews = Array.isArray(factreasoner.manual_review) ? factreasoner.manual_review : [];
+        const reviews = [...scaleReviews, ...factReviews];
+        if (scale.needs_manual_review && !scaleReviews.length) {
+          reviews.unshift({ reason: scale.reason || "LLM이 근거 부족 또는 불확실성을 보고 자동 교정을 보류했습니다." });
+        }
+        if (factreasoner.error) reviews.unshift({ reason: `FactReasoner: ${factreasoner.error}` });
+
+        const original = String(data.original_markdown || ui.markdownInput.value || "");
+        const corrected = String(data.corrected_markdown || original);
+        ui.originalOutput.value = original;
+        ui.correctedOutput.value = corrected;
+        ui.lineMeta.textContent = `${lineCount(original)}행 → ${lineCount(corrected)}행`;
+
+        ui.consensusValue.textContent = formatWon(scale.consensus_won);
+        const sourceLabel = scale.consensus_source === "request" ? "직접 지정" : "Markdown 자동 추출";
+        const consensusDate = findConsensusDate(scale);
+        ui.consensusMeta.textContent = `${sourceLabel}${consensusDate ? ` · ${consensusDate}` : ""}`;
+        ui.scaleCount.textContent = formatNumber(stats.scale_cells_changed || 0);
+        ui.rippleCount.textContent = formatNumber(stats.factreasoner_corrections_applied || applied.length || 0);
+        const rereview = factreasoner.rereview || {};
+        const rereviewMeta = rereview.enabled
+          ? ` · 재검토 ${rereview.passed || 0}/${rereview.checked || 0} 통과${rereview.reverted ? ` · ${rereview.reverted}건 되돌림` : ""}`
+          : " · 재검토 끔";
+        ui.rippleMeta.textContent = `${factreasoner.mode || "-"} 모드 · cascade ${stats.factreasoner_cascades_run || 0}회${rereviewMeta}`;
+        const nliStats = factreasoner.nli_stats || {};
+        if (Number.isFinite(Number(nliStats.enumerated_pairs))) {
+          ui.rippleMeta.textContent += ` · pair ${nliStats.kept_pairs || 0}/${nliStats.enumerated_pairs || 0}`;
+        }
+
+        const needsReview = Boolean(stats.manual_review_required || reviews.length);
+        ui.reviewStatus.textContent = needsReview ? "확인 필요" : "자동 검증 완료";
+        ui.reviewMeta.textContent = needsReview ? `${reviews.length}개 항목` : "추가 검토 없음";
+        ui.reviewSummary.classList.toggle("review", needsReview);
+        ui.reviewSummary.classList.toggle("clear", !needsReview);
+
+        ui.changeList.textContent = "";
+        let renderedChanges = 0;
+        corrections.forEach((correction) => {
+          const changes = Array.isArray(correction.changes) ? correction.changes : [];
+          if (!changes.length && correction.original && correction.corrected) {
+            appendChange(
+              ui.changeList,
+              correction.kind || "LLM 교정",
+              Number.isFinite(Number(correction.confidence)) ? `신뢰도 ${Math.round(Number(correction.confidence) * 100)}%` : "LLM 승인",
+              correction.original,
+              correction.corrected,
+            );
+            renderedChanges += 1;
+          }
+          changes.forEach((change) => {
+            const period = correction.period && correction.period !== "annual" ? ` ${correction.period}` : "";
+            const title = `${correction.year || "연도 미상"}년${period} · ${change.label || "영업이익"}${change.line ? ` · ${change.line}행` : ""}`;
+            const factor = Number.isFinite(Number(change.factor)) ? `× ${formatNumber(change.factor)}` : "scale";
+            appendChange(ui.changeList, title, factor, change.old_line, change.new_line);
+            renderedChanges += 1;
+          });
+        });
+        applied.forEach((change) => {
+          const kind = change.kind === "literal_scale_ripple" ? "동일 금액 재인용" :
+            change.kind === "atom_judgment" ? "FactReasoner atom" : "FactReasoner cascade";
+          const location = change.line ? ` · ${change.line}행` : change.chunk_id ? ` · ${change.chunk_id}` : "";
+          appendChange(ui.changeList, `${kind}${location}`, change.kind || "fact", change.original, change.corrected);
+          renderedChanges += 1;
+        });
+        if (!renderedChanges) appendEmpty(ui.changeList, "자동으로 변경된 항목이 없습니다. 원문이 이미 정상일 수 있습니다.");
+        ui.changeCount.textContent = `${renderedChanges}건`;
+
+        ui.reviewList.textContent = "";
+        ui.reviewList.classList.toggle("clear", !reviews.length);
+        if (reviews.length) reviews.forEach((item) => appendReview(ui.reviewList, item));
+        else appendReview(ui.reviewList, "자동 적용 경계를 벗어난 검토 항목이 없습니다.");
+        ui.reviewCount.textContent = `${reviews.length}건`;
+
+        ui.emptyState.classList.add("hidden");
+        ui.result.classList.add("visible");
+        ui.outputActions.classList.add("visible");
+      };
+
+      const errorMessage = async (response) => {
+        try {
+          const payload = await response.json();
+          if (typeof payload.detail === "string") return payload.detail;
+          if (Array.isArray(payload.detail)) return payload.detail.map((item) => item.msg || String(item)).join(" / ");
+        } catch (_) {
+          // Non-JSON errors fall through to the status-based message.
+        }
+        return `API 요청에 실패했습니다. (HTTP ${response.status})`;
+      };
+
+      const wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+
+      const pollForecastJob = async (submission) => {
+        const statusUrl = submission.status_url ||
+          `/api/forecasts/operating-profit/correct/jobs/${encodeURIComponent(submission.job_id || "")}`;
+        const startedAt = Date.now();
+        // Long reports can require many sequential 4096-token reasoning calls.
+        // Keep polling within the server's one-hour job retention window so a
+        // completed background job is not shown as a client-side failure.
+        const maxWaitMs = 60 * 60 * 1000;
+        while (Date.now() - startedAt < maxWaitMs) {
+          const response = await fetch(statusUrl, { cache: "no-store" });
+          if (!response.ok) throw new Error(await errorMessage(response));
+          const job = await response.json();
+          renderProgress(job);
+          if (job.status === "completed" && job.result) return job.result;
+          if (job.status === "failed") throw new Error(job.error || "LLM 정밀 교정 작업이 실패했습니다.");
+          const elapsedSeconds = Math.floor((Date.now() - startedAt) / 1000);
+          setStatus("busy", `LLM 정밀 교정 중입니다… (${elapsedSeconds}초 경과, 창을 닫지 마세요)`);
+          await wait(Math.max(1000, Number(job.poll_after_ms || 2000)));
+        }
+        throw new Error("LLM 정밀 교정이 60분 안에 완료되지 않았습니다. 작업이 계속 실행 중일 수 있으므로 job 상태를 확인해 주세요.");
+      };
+
+      ui.form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const markdownText = ui.markdownInput.value;
+        if (!markdownText.trim()) {
+          setStatus("error", "교정할 Markdown 본문을 입력해 주세요.");
+          ui.markdownInput.focus();
+          return;
+        }
+        if (new Blob([markdownText]).size > MAX_FILE_BYTES) {
+          setStatus("error", "Markdown 본문은 5 MB 이하여야 합니다.");
+          return;
+        }
+
+        const selectedGraphMode = ui.form.elements.graph_mode.value;
+        const payload = {
+          markdown_text: markdownText,
+          graph_mode: selectedGraphMode,
+          nli_mode: selectedGraphMode === "fast" ? "fast" : "all_pairs",
+          max_factreasoner_candidates: 10,
+        };
+        const consensusText = ui.consensusInput.value.trim();
+        if (consensusText) {
+          const consensus = Number(consensusText);
+          if (!Number.isFinite(consensus) || consensus === 0) {
+            setStatus("error", "컨센서스는 0이 아닌 유한한 원 단위 숫자여야 합니다.");
+            ui.consensusInput.focus();
+            return;
+          }
+          payload.consensus_won = consensus;
+        }
+
+        setWorking(true);
+        const useAsync = true;
+        setStatus("busy", "FactReasoner LLM 교정 작업을 접수하고 있습니다. 잠시만 기다려 주세요.");
+        try {
+          const response = await fetch(useAsync ? ASYNC_API_URL : API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!response.ok) throw new Error(await errorMessage(response));
+          let data = await response.json();
+          if (useAsync) renderProgress(data);
+          if (useAsync) data = await pollForecastJob(data);
+          if (typeof data.corrected_markdown !== "string") throw new Error("API 응답에 corrected_markdown이 없습니다.");
+          renderResult(data);
+          const changed = Number(data.stats && data.stats.scale_cells_changed || 0) +
+            Number(data.stats && data.stats.factreasoner_corrections_applied || 0);
+          setStatus("success", changed ? `교정이 완료되었습니다. 자동 변경 ${changed}건을 확인하세요.` : "분석이 완료되었습니다. 자동 변경이 필요한 숫자는 없었습니다.");
+        } catch (error) {
+          setStatus("error", error.message || "교정 API 호출 중 오류가 발생했습니다.");
+        } finally {
+          setWorking(false);
+        }
+      });
+
+      const copyText = async (text) => {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const helper = document.createElement("textarea");
+        helper.value = text;
+        helper.style.position = "fixed";
+        helper.style.opacity = "0";
+        document.body.appendChild(helper);
+        helper.select();
+        document.execCommand("copy");
+        helper.remove();
+      };
+
+      ui.copyButton.addEventListener("click", async () => {
+        if (!latestResult) return;
+        try {
+          await copyText(String(latestResult.corrected_markdown || ""));
+          showToast("교정 Markdown을 클립보드에 복사했습니다.");
+        } catch (_) {
+          showToast("복사하지 못했습니다. 교정본을 직접 선택해 주세요.");
+        }
+      });
+
+      ui.downloadButton.addEventListener("click", () => {
+        if (!latestResult) return;
+        const markdown = String(latestResult.corrected_markdown || "");
+        const baseName = (selectedFileName || "corrected-report")
+          .replace(/\.(md|markdown|txt)$/i, "")
+          .replace(/[^\p{L}\p{N}._-]+/gu, "-") || "corrected-report";
+        const blobUrl = URL.createObjectURL(new Blob([markdown], { type: "text/markdown;charset=utf-8" }));
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = `${baseName}.corrected.md`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(blobUrl), 0);
+        showToast(`${link.download} 다운로드를 시작했습니다.`);
+      });
+
+      ui.markdownInput.addEventListener("input", () => {
+        if (latestResult) {
+          resetResult();
+          setStatus("", "본문이 변경되었습니다. 다시 실행하면 새 입력으로 교정합니다.");
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+[project]
+name = "ripple-repair-api"
+version = "0.1.0"
+description = "Operating-profit forecast correction API: consensus scale repair, restatement ripples, and FactReasoner atom review."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.115.0",
+    "httpx>=0.28.1",
+    "numpy>=2.0.0",
+    "pydantic>=2.10.0",
+    "python-dotenv>=1.0.1",
+    "uvicorn>=0.32.0",
+]
+
+[project.optional-dependencies]
+fast = [
+    "fastembed>=0.7.3",
+    "sentence-transformers>=5.0.0",
+    "transformers>=4.51.0",
+]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.urls]
+Documentation = "docs/api-handoff/README.md"
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
