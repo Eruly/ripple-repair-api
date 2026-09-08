@@ -43,6 +43,19 @@ Content-Type: application/json
 [`docs/api-handoff/OVERVIEW.md`](docs/api-handoff/OVERVIEW.md)를 보세요.
 Postman 컬렉션: [`docs/api-handoff/ripple-repair-api.postman_collection.json`](docs/api-handoff/ripple-repair-api.postman_collection.json).
 
+## 보고서 LLM 감사 (`report_audit`, `POST /api/report-audit`)
+
+교정 API 와 별도로, 영업이익 전망 보고서 한 건을 **DART 공시 대조 → 번호 붙인 원장 인용의 청크 누적 읽기 → 결론(전망) 추론 감사 → 교정·근거 전파·결론 수정 제안 → HTML/JSON** 으로 한 번에 감사합니다. 표준 라이브러리만 쓰는 `report_audit/` 패키지이며 DART Open API 키(`DART_API_KEY`)가 필요합니다.
+
+```bash
+uv run python -m report_audit.dart_corp_codes                      # 최초 1회: 상장사 코드 목록
+uv run python -m report_audit.run_report_audit docs/report-audit/example/SNT모티브.md   # CLI → runs/report_audit/<tag>/report.html
+curl -s -X POST http://localhost:8200/api/report-audit -H 'Content-Type: application/json' \
+     -d '{"name":"SNT모티브","markdown_text":"...","llm":true}'    # FastAPI → html_url / json_url
+```
+
+절차·결과 읽는 법·배치 실행은 [`docs/report-audit/GUIDE.md`](docs/report-audit/GUIDE.md), 예시 출력은 [`docs/report-audit/example/`](docs/report-audit/example/).
+
 ## 요구 사항
 
 - Python 3.11+
@@ -63,7 +76,7 @@ uv sync --extra dev
 uv run pytest -q
 ```
 
-LLM이 없는 단위 테스트는 결정론 scale·JSON 계약·job progress·UI 계약만 검증합니다.
+LLM이 없는 단위 테스트는 결정론 scale·JSON 계약·job progress·UI 계약, 그리고 `report_audit` 의 전처리·표 파싱·단위 판정·LLM 없는 원샷 실행·라우터 계약을 검증합니다.
 
 ## 보안
 

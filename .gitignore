@@ -23,3 +23,7 @@ uploads/
 .idea/
 .vscode/
 .DS_Store
+
+# report_audit: DART 응답 캐시·회사 코드, 정규화 사본 (python3 -m report_audit.dart_corp_codes 로 생성)
+data/dart/
+data/case_reports_normalized/
