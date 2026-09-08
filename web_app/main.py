@@ -66,6 +66,10 @@ app = FastAPI(
 _STATIC = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=str(_STATIC)), name="static")
 
+from web_app.report_audit_router import router as _report_audit_router  # noqa: E402
+
+app.include_router(_report_audit_router)
+
 
 @app.on_event("startup")
 async def _warm_factreasoner_embedding() -> None:

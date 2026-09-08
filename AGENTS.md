@@ -7,6 +7,8 @@
 
 포함: FastAPI `/api/forecasts/operating-profit/*`, FactReasoner graph/judge/cascade,
 Web UI `/forecast-correction`, `docs/api-handoff/`.
+`report_audit/` 패키지와 `POST /api/report-audit` (DART 대조·청크 누적 읽기·결론 추론 감사·교정, `docs/report-audit/GUIDE.md`).
+`report_audit` 는 표준 라이브러리만 쓰고 `python3 -m report_audit.<module>` 로 실행한다. 결과는 `runs/report_audit/` (gitignore), DART 캐시는 `data/dart/` (gitignore).
 
 제외: ADK 에이전트, DART/OCR/Calculator/Logic/Ontology 스킬, OpenKB, 5단계 verify SSE,
 `runs/`, `data/`, 벤치마크 코퍼스.
